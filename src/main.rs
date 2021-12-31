@@ -3,21 +3,23 @@
 // Best run as something like `watch -n 0.5 -p -c -t asctrii $USER`
 
 use ansi_term::Color;
-use rand::Rng;
 use chrono::{Timelike, Utc};
+use rand::Rng;
 use std::env;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
     if args.len() < 2 {
         println!("Please specify a name!");
-        return();
+        return ();
     }
     let name = &args[1];
 
-    let max = 3 + 1;  // Add 1 since range is exclusive.
+    let max = 3;
     let scale = 3;
-    for half in 1..max {
+
+    // Use `N..=M` to yield all values in the interval [N, M], inclusive!
+    for half in 1..=max {
         draw_segment(half * scale, max * scale, half - 1, half)
     }
     draw_base(max, scale);
@@ -75,10 +77,12 @@ fn draw_base(max: i8, scale: i8) {
         print!(" ");
     }
     print!("{}", Color::Red.paint("┗"));
+
     for _ in 0..max {
         print!("{}", Color::Red.paint("━"));
     }
     print!("{}", Color::Red.paint("┛"));
+
     println!("");
 }
 
@@ -88,14 +92,18 @@ fn draw_message(name: &str) {
 
     // Draw a message in alternating colors.
     let now = Utc::now();
-    let mut i = now.second() % 2;  // Starting color is based on second.
-    for c in text.chars() {
-        i += 1;
 
-        match i % 2 {
-            0 => print!("{}", Color::Red.paint(c.to_string())),
-            1 => print!("{}", Color::Green.paint(c.to_string())),
-            _ => unreachable!(),
+    // Starting color is based on second.
+    let mut color_flag = now.second() % 2 == 0;
+
+    for c in text.chars() {
+        if color_flag {
+            print!("{}", Color::Red.paint(c.to_string()));
+        } else {
+            print!("{}", Color::Green.paint(c.to_string()));
         }
+
+        // Toggle the color flag.
+        color_flag ^= true;
     }
 }
