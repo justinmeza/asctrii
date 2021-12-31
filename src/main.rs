@@ -73,12 +73,12 @@ fn draw_segment(half: i8, center: i8, offset: i8, gap: i8) {
 
 fn draw_base(max: i8, scale: i8) {
     // Indent base so that it is centered.
-    for _ in 0..max * scale - max + 1 {
+    for _ in 0..max * scale - max {
         print!(" ");
     }
     print!("{}", Color::Red.paint("┗"));
 
-    for _ in 0..max {
+    for _ in 0..=max {
         print!("{}", Color::Red.paint("━"));
     }
     print!("{}", Color::Red.paint("┛"));
